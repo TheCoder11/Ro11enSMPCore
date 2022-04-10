@@ -1,0 +1,25 @@
+# Ro11en SMP Core Plugin
+
+# Town Size Limiter
+max-neutral-players: 7
+
+#Nation Tiers
+nation-tiers:
+  developing:
+    min-players: 1
+    daily-benefit: 1800
+  city-state:
+    min-players: 10
+    daily-benefit: 2400
+  state:
+    min-players: 20
+    daily-benefit: 3600
+  kingdom:
+    min-players: 30
+    daily-benefit: 7200
+  empire:
+    min-players: 50
+    daily-benefit: 10000
+
+# Days before Raids after Wars
+days-before-war: 1
