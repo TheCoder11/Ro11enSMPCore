@@ -23,3 +23,6 @@ nation-tiers:
 
 # Days before Raids after Wars
 days-before-war: 1
+
+# Do you need to be the leader of a nation before declaring war?
+needs-king: true

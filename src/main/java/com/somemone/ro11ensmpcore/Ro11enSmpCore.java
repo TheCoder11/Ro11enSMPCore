@@ -31,15 +31,11 @@ public final class Ro11enSmpCore extends JavaPlugin {
     public static Economy economy;
     public static File dataFolder;
 
-    private static ArrayList<NationWar> warsUnderDelay = new ArrayList<>();
-    private static JavaPlugin currentPlugin;
-
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
         handleConfig();
 
-        currentPlugin = this;
         dataFolder = this.getDataFolder();
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
@@ -57,19 +53,19 @@ public final class Ro11enSmpCore extends JavaPlugin {
     }
 
     public void handleConfig() {
-        FileConfiguration config = this.getConfig();
+        FileConfiguration con = this.getConfig();
         ArrayList<NationTier> two = new ArrayList<>();
 
-        for (String key : config.getConfigurationSection("nation-tiers").getKeys(false)) {
-            int minPlayers = config.getInt("nation-tiers." + key + ".min-players");
-            int dailyBenefit = config.getInt("nation-tiers." + key + ".daily-benefit");
+        for (String key : con.getConfigurationSection("nation-tiers").getKeys(false)) {
+            int minPlayers = con.getInt("nation-tiers." + key + ".min-players");
+            int dailyBenefit = con.getInt("nation-tiers." + key + ".daily-benefit");
 
             NationTier tier = new NationTier(minPlayers, dailyBenefit);
             two.add(tier);
         }
 
 
-        this.config = new Config( two, config.getInt("max-neutral-players"), config.getInt("days-before-war") );
+        config = new Config( two, con.getInt("max-neutral-players"), con.getInt("days-before-war"), con.getBoolean("needs-king"));
 
     }
 
@@ -87,23 +83,10 @@ public final class Ro11enSmpCore extends JavaPlugin {
         NationWar war = new NationWar(na, nd);
 
         List<NationWar> wars = FileHandler.getCurrentWars();
-        if (wars.contains(war))
-            wars.remove(war);
+        wars.remove(war);
         wars.add(war);
 
         FileHandler.saveCurrentWars(wars);
     }
 
-    public static boolean isAttackingUnderDelay(Nation nation, Nation victim) {
-
-        List<NationWar> wars = FileHandler.getCurrentWars();
-        Bukkit.broadcastMessage("STARTING: " + nation.getName() + ", " + victim.getName());
-        for (NationWar war : wars ) {
-            Bukkit.broadcastMessage(war.getNationAttacking().getName() + ", " + war.getNationDefending().getName());
-            if (war.getNationAttacking().getUUID().equals(nation.getUUID()) && war.getNationDefending().getUUID().equals(victim.getUUID()))
-                return true;
-        }
-
-        return false;
-    }
 }

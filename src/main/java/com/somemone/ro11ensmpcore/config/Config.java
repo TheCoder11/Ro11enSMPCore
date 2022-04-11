@@ -6,14 +6,16 @@ import java.util.ArrayList;
 
 public class Config {
 
-    private ArrayList<NationTier> tiers;
-    private int maxNeutralPlayers;
-    private int dayDelay;
+    private final ArrayList<NationTier> tiers;
+    private final int maxNeutralPlayers;
+    private final int dayDelay;
+    private final boolean needsKing;
 
-    public Config (ArrayList<NationTier> tiers, int maxNeutralPlayers, int dayDelay) {
+    public Config (ArrayList<NationTier> tiers, int maxNeutralPlayers, int dayDelay, boolean needsKing) {
         this.tiers = tiers;
         this.maxNeutralPlayers = maxNeutralPlayers;
         this.dayDelay = dayDelay;
+        this.needsKing = needsKing;
     }
 
     public ArrayList<NationTier> getTiers() {
@@ -46,4 +48,6 @@ public class Config {
     public int getMaxNeutralPlayers() {
         return maxNeutralPlayers;
     }
+
+    public boolean getNeedsKing() { return needsKing; }
 }

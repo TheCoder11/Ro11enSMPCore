@@ -20,6 +20,7 @@ public class WarCommand implements CommandExecutor {
         if (!(sender instanceof Player)) return false;
         Resident res = TownyUniverse.getInstance().getResident(((Player) sender).getUniqueId());
 
+        assert res != null;
         if (!res.hasNation()) {
             sender.sendMessage(ChatColor.RED + "You have no nation!");
             return true;
@@ -27,7 +28,7 @@ public class WarCommand implements CommandExecutor {
 
         try {
 
-            if (!res.getNation().getKing().equals(res)) {
+            if (!res.getNation().getKing().equals(res) && Ro11enSmpCore.config.getNeedsKing()) {
                 sender.sendMessage(ChatColor.RED + "You are not the leader of the nation! Contact them if you'd like to go to war" );
                 return true;
             }
