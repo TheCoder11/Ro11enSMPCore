@@ -2,6 +2,8 @@ package com.somemone.ro11ensmpcore;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.command.NationCommand;
+import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Town;
 import com.somemone.ro11ensmpcore.command.ConfigCommand;
@@ -13,6 +15,7 @@ import com.somemone.ro11ensmpcore.events.InviteListener;
 import com.somemone.ro11ensmpcore.events.TimeListener;
 import com.somemone.ro11ensmpcore.events.WarListener;
 import com.somemone.ro11ensmpcore.file.FileHandler;
+import com.somemone.ro11ensmpcore.time.TimeRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -24,6 +27,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 public final class Ro11enSmpCore extends JavaPlugin {
 
@@ -31,15 +35,21 @@ public final class Ro11enSmpCore extends JavaPlugin {
     public static Economy economy;
     public static File dataFolder;
 
+    private static ArrayList<NationWar> warsUnderDelay = new ArrayList<>();
+    private static JavaPlugin currentPlugin;
+
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
         handleConfig();
 
+        currentPlugin = this;
         dataFolder = this.getDataFolder();
 
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         economy = rsp.getProvider();
+
+        new TimeRunnable().runTaskTimer(this, 0L, 1200L);
 
         setupTowns();
 
@@ -53,19 +63,19 @@ public final class Ro11enSmpCore extends JavaPlugin {
     }
 
     public void handleConfig() {
-        FileConfiguration con = this.getConfig();
+        FileConfiguration config = this.getConfig();
         ArrayList<NationTier> two = new ArrayList<>();
 
-        for (String key : con.getConfigurationSection("nation-tiers").getKeys(false)) {
-            int minPlayers = con.getInt("nation-tiers." + key + ".min-players");
-            int dailyBenefit = con.getInt("nation-tiers." + key + ".daily-benefit");
+        for (String key : config.getConfigurationSection("nation-tiers").getKeys(false)) {
+            int minPlayers = config.getInt("nation-tiers." + key + ".min-players");
+            int dailyBenefit = config.getInt("nation-tiers." + key + ".daily-benefit");
 
             NationTier tier = new NationTier(minPlayers, dailyBenefit);
             two.add(tier);
         }
 
 
-        config = new Config( two, con.getInt("max-neutral-players"), con.getInt("days-before-war"), con.getBoolean("needs-king"));
+        this.config = new Config( two, config.getInt("max-neutral-players"), config.getInt("days-before-war"), config.getBoolean("needs-king") );
 
     }
 
@@ -73,9 +83,15 @@ public final class Ro11enSmpCore extends JavaPlugin {
         for (Town town : TownyUniverse.getInstance().getTowns()) {
             if (town.hasNation()) continue;
 
-            Bukkit.broadcastMessage(town.getName());
+            try {
+                NationCommand.newNation(town.getName(), town);
+            } catch (AlreadyRegisteredException e) {
+                e.printStackTrace();
+            } catch (NotRegisteredException e) {
+                e.printStackTrace();
+            }
 
-            NationCommand.newNation(Bukkit.getServer().getPlayer(town.getMayor().getName()), town.getName(), town, true);
+            getServer().getLogger().log(Level.INFO, "Nation created for town " + town.getName());
         }
     }
 
@@ -83,10 +99,20 @@ public final class Ro11enSmpCore extends JavaPlugin {
         NationWar war = new NationWar(na, nd);
 
         List<NationWar> wars = FileHandler.getCurrentWars();
-        wars.remove(war);
+        if (wars.contains(war))
+            wars.remove(war);
         wars.add(war);
 
         FileHandler.saveCurrentWars(wars);
     }
 
+    public static boolean isAttackingUnderDelay(Nation nation, Nation victim) {
+
+        List<NationWar> wars = FileHandler.getCurrentWars();
+        for (NationWar war : wars )
+            if (war.getNationAttacking().getUUID().equals(nation.getUUID()) && war.getNationDefending().getUUID().equals(victim.getUUID()))
+                return true;
+
+        return false;
+    }
 }

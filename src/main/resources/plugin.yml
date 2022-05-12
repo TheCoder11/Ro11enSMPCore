@@ -3,6 +3,7 @@ version: '${project.version}'
 main: com.somemone.ro11ensmpcore.Ro11enSmpCore
 api-version: 1.18
 authors: [ Somemone ]
+depend: [Towny, FlagWar]
 description: Minceraft gaming time :)))
 
 commands:
@@ -13,3 +14,8 @@ commands:
   war:
     usage: /war <nation>
     description: Declares war on another country
+
+permissions:
+  ro11ensmpcore.waradmin:
+    description: Allows player to skip wait for declaring war
+    default: op

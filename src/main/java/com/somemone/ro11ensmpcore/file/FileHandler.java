@@ -8,6 +8,8 @@ import com.somemone.ro11ensmpcore.config.NationWar;
 import org.bukkit.Bukkit;
 
 import java.io.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -34,16 +36,12 @@ public class FileHandler {
                 String[] nations = line.split(",");
                 if (nations.length != 3) continue;
 
-                Bukkit.broadcastMessage(nations[0] + " " + nations[1] + " " + nations[2]);
-
                 Nation attack = TownyAPI.getInstance().getNation( UUID.fromString(nations[0]) );
                 Nation defense = TownyAPI.getInstance().getNation( UUID.fromString(nations[1]) );
 
-                Bukkit.broadcastMessage(attack.getName() + " " + defense.getName());
+                LocalDateTime datetime = LocalDateTime.parse(nations[2], DateTimeFormatter.ISO_DATE_TIME);
 
-                int daysLeft = Integer.parseInt( nations[2] );
-
-                wars.add( new NationWar(attack, defense, daysLeft) );
+                wars.add( new NationWar(attack, defense, datetime) );
 
                 line = reader.readLine();
             }
@@ -69,9 +67,11 @@ public class FileHandler {
         try {
             FileWriter writer = new FileWriter(file, false);
 
+            writer.write("");
+
             for (NationWar war : wars) {
-                writer.write( war.getNationAttacking().getUUID() + "," +
-                        war.getNationDefending().getUUID() + "," + war.getDaysLeft() );
+                writer.append( war.getNationAttacking().getUUID() + "," +
+                        war.getNationDefending().getUUID() + "," + war.getDateTime().format(DateTimeFormatter.ISO_DATE_TIME) + "\n" );
             }
             writer.close();
         } catch (IOException e) {
@@ -80,24 +80,4 @@ public class FileHandler {
 
     }
 
-    public static void newWarsDay () throws AlreadyRegisteredException {
-        List<NationWar> wars = getCurrentWars();
-        for (int i = 0; i < wars.size(); i++) {
-
-            int days = wars.get(i).getDaysLeft();
-            Bukkit.broadcastMessage(days + "");
-            days--;
-            if (days == 0) {
-                NationWar war = wars.remove(i);
-                i--;
-
-                war.getNationAttacking().addEnemy(war.getNationDefending());
-
-                continue;
-            }
-            wars.get(i).setDaysLeft(days);
-
-        }
-        saveCurrentWars(wars);
-    }
 }

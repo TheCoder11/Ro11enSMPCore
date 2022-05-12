@@ -6,11 +6,18 @@ import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.somemone.ro11ensmpcore.Ro11enSmpCore;
 import com.somemone.ro11ensmpcore.config.NationWar;
+import com.somemone.ro11ensmpcore.events.WarStartEvent;
+import com.somemone.ro11ensmpcore.file.FileHandler;
+import io.github.townyadvanced.flagwar.FlagWar;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 public class WarCommand implements CommandExecutor {
 
@@ -41,10 +48,29 @@ public class WarCommand implements CommandExecutor {
                 return true;
             }
 
-            sender.sendMessage(ChatColor.GOLD + "The war has been declared. You know need to wait for " + Ro11enSmpCore.config.getDayDelay() + " days to start the attack.");
-            Ro11enSmpCore.addWar(res.getNation(), victim);
-            victim.sendMessage(Component.text(ChatColor.GOLD + "War has been declared on you by " + res.getNation().getName() +
-                    ". You have " + Ro11enSmpCore.config.getDayDelay() + " days to prepare."));
+            String addition = "";
+
+            if (args.length == 2 && args[1].equals("bypass")) {
+                res.getNation().addEnemy(victim);
+            } else {
+                NationWar war = new NationWar(res.getNation(), victim);
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("hh:mm a, EEE LLL dd");
+
+                List<NationWar> wars = FileHandler.getCurrentWars();
+                boolean add = true;
+                for (NationWar w : wars)
+                    if (w.getNationAttacking().equals(war.getNationAttacking()) && w.getNationDefending().equals(war.getNationDefending()))
+                        add = false;
+
+                if (add) {
+                    wars.add(war);
+                    addition = "The war will start at " + dtf.format(war.getDateTime());
+                    Bukkit.getPluginManager().callEvent(new WarStartEvent(war));
+                    FileHandler.saveCurrentWars(wars);
+                }
+            }
+
+            victim.sendMessage(Component.text(ChatColor.GOLD + "War has been declared on you by " + res.getNation().getName() + ". " + addition));
 
         } catch (Exception e) {
             e.printStackTrace();

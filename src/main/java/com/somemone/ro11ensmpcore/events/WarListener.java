@@ -5,8 +5,10 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.event.NationAddEnemyEvent;
 import com.palmergames.bukkit.towny.event.NewDayEvent;
+import com.palmergames.bukkit.towny.event.TownInvitePlayerEvent;
 import com.palmergames.bukkit.towny.event.nation.toggle.NationToggleNeutralEvent;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.exceptions.TownyException;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -30,8 +32,15 @@ public class WarListener implements Listener {
     }
 
     @EventHandler
-    public void onNewDay (NewDayEvent event) throws AlreadyRegisteredException {
-        FileHandler.newWarsDay();
+    public void onNewPlayer (TownInvitePlayerEvent event) throws NotRegisteredException {
+        if (!event.getInvite().getSender().hasNation()) return;
+
+        if (Ro11enSmpCore.config.getMaxNeutralPlayers() > event.getInvite().getSender().getNation().getNumResidents() + 1 && event.getInvite().getSender().getNation().isNeutral()) {
+            event.getInvite().getSender().getNation().setNeutral(false);
+            event.getInvite().getSender().getNation().sendMessage(Component.text(ChatColor.GOLD + "Due to adding a new player, you have been " +
+                    "set to non-neutral"));
+        }
+
     }
 
 }
