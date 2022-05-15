@@ -1,13 +1,12 @@
-package com.somemone.ro11ensmpcore.time;
+package somemone.ro11enwar.time;
 
 import com.palmergames.adventure.text.Component;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
-import com.somemone.ro11ensmpcore.config.NationWar;
-import com.somemone.ro11ensmpcore.file.FileHandler;
+import somemone.ro11enwar.config.NationWar;
+import somemone.ro11enwar.file.FileHandler;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class TimeRunnable extends BukkitRunnable {

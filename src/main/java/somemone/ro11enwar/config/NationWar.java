@@ -1,7 +1,6 @@
-package com.somemone.ro11ensmpcore.config;
+package somemone.ro11enwar.config;
 
 import com.palmergames.bukkit.towny.object.Nation;
-import com.somemone.ro11ensmpcore.Ro11enSmpCore;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

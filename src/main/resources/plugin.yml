@@ -1,16 +1,12 @@
-name: Ro11enSMPCore
+name: Ro11enWar
 version: '${project.version}'
-main: com.somemone.ro11ensmpcore.Ro11enSmpCore
+main: com.somemone.ro11enwar.Ro11enWar
 api-version: 1.18
 authors: [ Somemone ]
 depend: [Towny, FlagWar]
-description: Minceraft gaming time :)))
+description: New Features for wars on the Ro11en server
 
 commands:
-  ro11ensettings:
-    usage: /ro11ensettings
-    description: jkjkjkjk
-
   war:
     usage: /war <nation>
     description: Declares war on another country

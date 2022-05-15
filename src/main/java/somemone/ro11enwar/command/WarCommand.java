@@ -1,14 +1,13 @@
-package com.somemone.ro11ensmpcore.command;
+package somemone.ro11enwar.command;
 
 import com.palmergames.adventure.text.Component;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Nation;
 import com.palmergames.bukkit.towny.object.Resident;
-import com.somemone.ro11ensmpcore.Ro11enSmpCore;
-import com.somemone.ro11ensmpcore.config.NationWar;
-import com.somemone.ro11ensmpcore.events.WarStartEvent;
-import com.somemone.ro11ensmpcore.file.FileHandler;
-import io.github.townyadvanced.flagwar.FlagWar;
+import somemone.ro11enwar.Ro11enWar;
+import somemone.ro11enwar.config.NationWar;
+import somemone.ro11enwar.events.WarStartEvent;
+import somemone.ro11enwar.file.FileHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -35,7 +34,7 @@ public class WarCommand implements CommandExecutor {
 
         try {
 
-            if (!res.getNation().getKing().equals(res) && Ro11enSmpCore.config.getNeedsKing()) {
+            if (!res.getNation().getKing().equals(res) && Ro11enWar.config.getNeedsKing()) {
                 sender.sendMessage(ChatColor.RED + "You are not the leader of the nation! Contact them if you'd like to go to war" );
                 return true;
             }

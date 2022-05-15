@@ -1,4 +1,4 @@
-package com.somemone.ro11ensmpcore.config;
+package somemone.ro11enwar.config;
 
 public class NationTier {
     private int minPlayers;

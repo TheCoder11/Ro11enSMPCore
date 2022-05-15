@@ -1,6 +1,6 @@
-package com.somemone.ro11ensmpcore.events;
+package somemone.ro11enwar.events;
 
-import com.somemone.ro11ensmpcore.config.NationWar;
+import somemone.ro11enwar.config.NationWar;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 

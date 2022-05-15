@@ -1,11 +1,9 @@
-package com.somemone.ro11ensmpcore.file;
+package somemone.ro11enwar.file;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.object.Nation;
-import com.somemone.ro11ensmpcore.Ro11enSmpCore;
-import com.somemone.ro11ensmpcore.config.NationWar;
-import org.bukkit.Bukkit;
+import somemone.ro11enwar.Ro11enWar;
+import somemone.ro11enwar.config.NationWar;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -17,7 +15,7 @@ import java.util.UUID;
 public class FileHandler {
 
     public static List<NationWar> getCurrentWars() {
-        File file = new File (Ro11enSmpCore.dataFolder, "wars.csv");
+        File file = new File (Ro11enWar.dataFolder, "wars.csv");
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -55,7 +53,7 @@ public class FileHandler {
     }
 
     public static void saveCurrentWars (List<NationWar> wars) {
-        File file = new File (Ro11enSmpCore.dataFolder, "wars.csv");
+        File file = new File (Ro11enWar.dataFolder, "wars.csv");
         if (!file.exists()) {
             try {
                 file.createNewFile();
