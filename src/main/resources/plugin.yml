@@ -1,6 +1,6 @@
 name: Ro11enWar
 version: '${project.version}'
-main: com.somemone.ro11enwar.Ro11enWar
+main: somemone.ro11enwar.Ro11enWar
 api-version: 1.18
 authors: [ Somemone ]
 depend: [Towny, FlagWar]
